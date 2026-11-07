@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="hi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0a0907">
+<title>S.R Browser</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Exo+2:ital,wght@1,700;1,800&family=Manrope:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- Top bar: Enter URL | Search | Refresh (UC style) -->
+<header class="topbar">
+  <img class="appmark" src="icon-192.png" alt="S.R Browser" width="30" height="30">
+  <form id="urlForm" class="urlform" autocomplete="off">
+    <input id="url" type="text" inputmode="url" enterkeyhint="go" placeholder="Enter URL" aria-label="Enter URL or search">
+    <button class="searchbtn" type="submit" id="searchBtn"><span data-i="search"></span><b>Search</b></button>
+  </form>
+  <button class="tb-btn" id="btnRefresh" aria-label="Refresh" disabled><span data-i="refresh"></span></button>
+</header>
+
+<main id="main">
+  <!-- HOME -->
+  <section class="view" id="v-home">
+    <div class="engine" id="engine">
+      <div class="engine-logo" id="engineLogo">
+        <img id="engineImg" alt="" hidden>
+        <div class="engine-text" id="engineText">Google</div>
+      </div>
+      <div class="engine-sub" id="engineSub">Search the web, videos and images</div>
+    </div>
+    <div class="modes" id="modes" role="group" aria-label="Search type">
+      <button class="chip" data-mode="web" aria-pressed="true">Web</button>
+      <button class="chip" data-mode="vid" aria-pressed="false">Videos</button>
+      <button class="chip" data-mode="img" aria-pressed="false">Images</button>
+    </div>
+    <div class="grid" id="grid"></div>
+  </section>
+
+  <!-- PANELS -->
+  <section class="view" id="v-bookmarks" hidden>
+    <div class="vhead"><button class="back" data-back aria-label="Back"><span data-i="back"></span></button><h2>Bookmarks</h2></div>
+    <form class="form" id="bmForm" autocomplete="off">
+      <input id="bmName" type="text" placeholder="Name (for example Hotstar)" maxlength="14" aria-label="Site name">
+      <input id="bmUrl" type="text" inputmode="url" placeholder="https://example.com" aria-label="Site address">
+      <button class="btn" type="submit">Add to home</button>
+    </form>
+    <div class="list" id="bmList"></div>
+  </section>
+
+  <section class="view" id="v-history" hidden>
+    <div class="vhead"><button class="back" data-back aria-label="Back"><span data-i="back"></span></button><h2>History</h2><button class="link" id="clearHist">Clear</button></div>
+    <div class="list" id="histList"></div>
+  </section>
+
+  <section class="view" id="v-videos" hidden>
+    <div class="vhead"><button class="back" data-back aria-label="Back"><span data-i="back"></span></button><h2>My Videos</h2><button class="link" id="clearVid">Clear</button></div>
+    <form class="form" id="vidForm" autocomplete="off">
+      <input id="vidTitle" type="text" placeholder="Video name" maxlength="60" aria-label="Video name">
+      <input id="vidUrl" type="text" inputmode="url" placeholder="Video page or file link" aria-label="Video link">
+      <button class="btn" type="submit">Save video</button>
+    </form>
+    <div class="list" id="vidList"></div>
+  </section>
+
+  <section class="view" id="v-downloads" hidden>
+    <div class="vhead"><button class="back" data-back aria-label="Back"><span data-i="back"></span></button><h2>Downloads</h2><button class="link" id="clearDl">Clear</button></div>
+    <form class="form" id="dlForm" autocomplete="off">
+      <input id="dlUrl" type="text" inputmode="url" placeholder="Direct file link (mp4, pdf, apk, zip)" aria-label="File link">
+      <button class="btn" type="submit">Add download</button>
+    </form>
+    <div class="list" id="dlList"></div>
+    <p class="note">Open dabane par file aapke phone ke browser se download hoti hai.</p>
+  </section>
+
+  <section class="view" id="v-addons" hidden>
+    <div class="vhead"><button class="back" data-back aria-label="Back"><span data-i="back"></span></button><h2>Add-ons</h2></div>
+    <div class="list" id="addonList"></div>
+  </section>
+
+  <section class="view" id="v-settings" hidden>
+    <div class="vhead"><button class="back" data-back aria-label="Back"><span data-i="back"></span></button><h2>Settings</h2></div>
+
+    <h3 class="grp">Search</h3>
+    <div class="list">
+      <div class="srow col"><div class="lbl"><b>Search engine</b><small>Home screen ke upar ka logo bhi isse badalta hai</small></div><div class="seg" id="engineSeg"></div></div>
+    </div>
+
+    <h3 class="grp">Display</h3>
+    <div class="list">
+      <div class="srow"><div class="lbl"><b>Night mode</b><small>Black and gold look</small></div><button class="switch" id="swNight" role="switch" aria-label="Night mode"></button></div>
+      <div class="srow col"><div class="lbl"><b>Text size</b></div><div class="seg" id="sizeSeg"></div></div>
+      <div class="srow col"><div class="lbl"><b>Home screen columns</b></div><div class="seg" id="colSeg"></div></div>
+      <div class="srow"><div class="lbl"><b>Full screen</b><small>Top bar ke bina dekho</small></div><button class="switch" id="swFull" role="switch" aria-label="Full screen"></button></div>
+    </div>
+
+    <h3 class="grp">Privacy</h3>
+    <div class="list">
+      <div class="srow"><div class="lbl"><b>Incognito mode</b><small>History save nahi hoti</small></div><button class="switch" id="swIncog" role="switch" aria-label="Incognito mode"></button></div>
+      <div class="srow"><div class="lbl"><b>Clear history</b></div><button class="mini-btn danger" id="setClearHist">Clear</button></div>
+      <div class="srow"><div class="lbl"><b>Clear downloads and videos</b></div><button class="mini-btn danger" id="setClearFiles">Clear</button></div>
+      <div class="srow"><div class="lbl"><b>Restore defaults</b><small>Settings, bookmarks, sab kuch</small></div><button class="mini-btn danger" id="resetAll">Reset</button></div>
+    </div>
+
+    <h3 class="grp">About</h3>
+    <div class="list about">
+      <img src="icon-192.png" alt="" width="54" height="54">
+      <div><b>S.R Browser</b><br><small>Version 1.0</small></div>
+    </div>
+  </section>
+</main>
+
+<!-- Bottom bar: add bookmark | menu | share (UC style) -->
+<nav class="bottombar" aria-label="Main">
+  <button id="btnAdd" aria-label="Add bookmark"><span data-i="starplus"></span></button>
+  <button id="btnMenu" aria-label="Menu" aria-expanded="false" class="menu-toggle"><span data-i="chevron"></span></button>
+  <button id="btnShare" aria-label="Share"><span data-i="share"></span></button>
+</nav>
+
+<!-- Menu sheet: 2 pages, swipe sideways -->
+<div class="scrim" id="scrim" hidden></div>
+<div class="sheet" id="sheet" hidden role="dialog" aria-label="Menu">
+  <div class="pages" id="pages"></div>
+  <div class="dots" id="dots"><i class="on"></i><i></i></div>
+</div>
+
+<!-- Exit dialog -->
+<div class="modal" id="exitModal" hidden>
+  <div class="card">
+    <b>Exit S.R Browser?</b>
+    <p id="exitMsg">Kya aap band karna chahte ho?</p>
+    <div class="row-btns"><button class="mini-btn" id="exitNo">Stay</button><button class="btn" id="exitYes">Exit</button></div>
+  </div>
+</div>
+<div class="toast" id="toast" hidden></div>
+
+<script src="app.js"></script>
+</body>
+</html>
