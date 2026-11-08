@@ -10,7 +10,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Unzip project
-        run: unzip -q "sr-browser-android(1).zip" -d proj
+        run: unzip -q sr-browser-v2.zip -d proj
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
