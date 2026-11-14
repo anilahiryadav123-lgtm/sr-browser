@@ -10,7 +10,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Unzip project
-        run: unzip -q sr-browser-v7.zip -d proj
+        run: unzip -q -o sr-browser-v8.zip -d proj
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
@@ -24,14 +24,14 @@ jobs:
         working-directory: proj
         run: gradle assembleDebug --no-daemon
       - name: Copy APK
-        run: cp proj/app/build/outputs/apk/debug/app-debug.apk SR-Browser-v1.7.apk
+        run: cp proj/app/build/outputs/apk/debug/app-debug.apk SR-Browser-v1.8.apk
       - name: Save APK in Artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: SR-Browser-v1.7
-          path: SR-Browser-v1.7.apk
+          name: SR-Browser-v1.8
+          path: SR-Browser-v1.8.apk
       - name: Publish APK in Releases
         continue-on-error: true
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh release create "v1.7-build-${{ github.run_number }}-${{ github.run_attempt }}" SR-Browser-v1.7.apk --title "S.R Browser v1.7 (build ${{ github.run_number }})" --notes "UC style intro, no download button on Google"
+        run: gh release create "v1.8-build-${{ github.run_number }}-${{ github.run_attempt }}" SR-Browser-v1.8.apk --title "S.R Browser v1.8 (build ${{ github.run_number }})" --notes "UC style settings, night animation, brightness, homepage colours"
