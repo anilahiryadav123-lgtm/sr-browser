@@ -9,8 +9,19 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Unzip project
-        run: unzip -q -o sr-browser-v8.zip -d proj
+      - name: Find and unzip newest project zip
+        run: |
+          ls -la
+          ZIP=$(ls -1 sr-browser-v*.zip 2>/dev/null | sort -V | tail -n 1)
+          if [ -z "$ZIP" ]; then
+            echo "ERROR: repo mein sr-browser-v...zip file nahi mili. Pehle zip upload karo."
+            exit 1
+          fi
+          echo "Using: $ZIP"
+          unzip -q -o "$ZIP" -d proj
+          VER=$(grep -oE "versionName '[^']+'" proj/app/build.gradle | cut -d"'" -f2)
+          echo "VER=$VER" >> $GITHUB_ENV
+          echo "Version: $VER"
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
@@ -24,14 +35,14 @@ jobs:
         working-directory: proj
         run: gradle assembleDebug --no-daemon
       - name: Copy APK
-        run: cp proj/app/build/outputs/apk/debug/app-debug.apk SR-Browser-v1.8.apk
+        run: cp proj/app/build/outputs/apk/debug/app-debug.apk "SR-Browser-$VER.apk"
       - name: Save APK in Artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: SR-Browser-v1.8
-          path: SR-Browser-v1.8.apk
+          name: SR-Browser-${{ env.VER }}
+          path: SR-Browser-${{ env.VER }}.apk
       - name: Publish APK in Releases
         continue-on-error: true
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh release create "v1.8-build-${{ github.run_number }}-${{ github.run_attempt }}" SR-Browser-v1.8.apk --title "S.R Browser v1.8 (build ${{ github.run_number }})" --notes "UC style settings, night animation, brightness, homepage colours"
+        run: gh release create "v$VER-build-${{ github.run_number }}-${{ github.run_attempt }}" "SR-Browser-$VER.apk" --title "S.R Browser $VER (build ${{ github.run_number }})" --notes "S.R Browser $VER" --latest
