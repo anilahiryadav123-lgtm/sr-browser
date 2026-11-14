@@ -10,7 +10,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Unzip project
-        run: unzip -q sr-browser-v2.zip -d proj
+        run: unzip -q sr-browser-v6.zip -d proj
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
@@ -28,4 +28,4 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           cp proj/app/build/outputs/apk/debug/app-debug.apk SR-Browser.apk
-          gh release create "apk-${{ github.run_number }}" SR-Browser.apk --title "S.R Browser build ${{ github.run_number }}" --notes "Download SR-Browser.apk and install"
+          gh release create "apk-${{ github.run_number }}" SR-Browser.apk --title "S.R Browser build ${{ github.run_number }}" --notes "S.R Browser v1.6"
